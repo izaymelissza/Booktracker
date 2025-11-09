@@ -10,6 +10,7 @@ class Book(db.Model):
     genre = db.Column(db.String(150))
     publication_year = db.Column(db.Integer)
     pages = db.Column(db.Integer)
+    description = db.Column(db.Text)
     cover_url = db.Column(db.String(300))
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # 1:N relationship with User
     
