@@ -9,7 +9,7 @@ class Book(db.Model):
     isbn = db.Column(db.String(20))
     genre = db.Column(db.String(150))
     publication_year = db.Column(db.Integer)
-    pages = db.Column(db.Text)
+    pages = db.Column(db.Integer)
     cover_url = db.Column(db.String(300))
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # 1:N relationship with User
     
@@ -40,7 +40,7 @@ class Review(db.Model):
     
     # Ensure a user can only review a book once
     __table_args__ = (db.UniqueConstraint('user_id', 'book_id', name='_user_book_review_uc'),)
-    
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True)
