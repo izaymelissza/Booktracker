@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .decorators import admin_required
 from .models import Book
+from . import db
 
 views = Blueprint('views', __name__)
 
@@ -14,8 +15,111 @@ def home():
 @login_required
 def books():
     all_books = Book.query.order_by(Book.title).all()
-    
     return render_template('books.html', books=all_books, user=current_user)
+
+@views.route('/books/<int:book_id>')
+@login_required
+def book_detail(book_id):
+    book = Book.query.get_or_404(book_id)
+    return render_template('book_detail.html', book=book, user=current_user)
+
+@views.route('/books/create', methods=['GET', 'POST'])
+@login_required
+def create_book():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        author = request.form.get('author')
+        isbn = request.form.get('isbn')
+        genre = request.form.get('genre')
+        publication_year = request.form.get('publication_year')
+        pages = request.form.get('pages')
+        description = request.form.get('description')
+        cover_url = request.form.get('cover_url')
+        
+        if not title or len(title) < 1:
+            flash('Title is required!', category='error')
+        elif not author or len(author) < 1:
+            flash('Author is required!', category='error')
+        else:
+            new_book = Book(
+                title=title,
+                author=author,
+                isbn=isbn if isbn else None,
+                genre=genre if genre else None,
+                publication_year=int(publication_year) if publication_year else None,
+                pages=int(pages) if pages else None,
+                description=description if description else None,
+                cover_url=cover_url if cover_url else None,
+                created_by=current_user.id
+            )
+            
+            db.session.add(new_book)
+            db.session.commit()
+            
+            flash('Book added successfully!', category='success')
+            return redirect(url_for('views.book_detail', book_id=new_book.id))
+    
+    return render_template('create_book.html', user=current_user)
+
+@views.route('/books/<int:book_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_book(book_id):
+    book = Book.query.get_or_404(book_id)
+
+    if current_user.role != 'admin' and book.created_by != current_user.id:
+        flash('You can only edit your own books!', category='error')
+        return redirect(url_for('views.book'))
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        author = request.form.get('author')
+        isbn = request.form.get('isbn')
+        genre = request.form.get('genre')
+        publication_year = request.form.get('publication_year')
+        pages = request.form.get('pages')
+        description = request.form.get('description')
+        cover_url = request.form.get('cover_url')
+
+        if not title or len(title) < 1:
+            flash('Title is required!', category='error')
+        elif not author or len(author) < 1:
+            flash('Author is required!', category='error')
+        else:
+            # Update a könyv adatait
+            book.title = title
+            book.author = author
+            book.isbn = isbn if isbn else None
+            book.genre = genre if genre else None
+            book.publication_year = int(publication_year) if publication_year else None
+            book.pages = int(pages) if pages else None
+            book.description = description if description else None
+            book.cover_url = cover_url if cover_url else None
+            
+            db.session.commit()
+            
+            flash('Book updated successfully!', category='success')
+            return redirect(url_for('views.book_detail', book_id=book.id))
+        
+
+    return render_template('edit_book.html', book=book, user=current_user)
+
+@views.route('/books/<int:book_id>/delete', methods=['POST'])
+@login_required
+def delete_book(book_id):
+    book = Book.query.get_or_404(book_id)
+
+    if current_user.role != 'admin' and book.created_by != current_user.id:
+        flash('You can only delete your own books!', category='error')
+        return redirect(url_for('views.books'))
+    
+    book.title = book.title
+
+    db.session.delete(book)
+    db.session.commit()
+
+    flash(f"Book '{book.title}' deleted successfully!", category='success')
+    return redirect(url_for('views.books'))
+
 
 @views.route('/reading-lists')
 @login_required
@@ -32,10 +136,3 @@ def stats():
 @admin_required
 def admin_test():
     return "<h1>Welcome Admin!</h1><p>If you see this, the decorator works!</p>"
-
-@views.route('/books/<int:book_id>')
-@login_required
-def book_detail(book_id):
-    book = Book.query.get_or_404(book_id)
-    
-    return render_template('book_detail.html', book=book, user=current_user)

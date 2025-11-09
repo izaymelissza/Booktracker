@@ -15,8 +15,8 @@ class Book(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # 1:N relationship with User
     
     # Relationships
-    reading_lists = db.relationship('Reading_List', backref='book', lazy=True)
-    reviews = db.relationship('Review', backref='book', lazy=True)
+    reading_lists = db.relationship('Reading_List', backref='book', lazy=True, cascade='all, delete-orphan')
+    reviews = db.relationship('Review', backref='book', lazy=True, cascade='all, delete-orphan')
 
 class Reading_List(db.Model):
     id = db.Column(db.Integer, primary_key=True)

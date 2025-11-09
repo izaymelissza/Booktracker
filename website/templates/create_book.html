@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Add New Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Vissza gomb -->
+    <div class="mb-3">
+        <a href="/books" class="btn btn-secondary">
+            <i class="fa fa-arrow-left"></i> Back to Books
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>📚 Add New Book</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Title (kötelező) -->
+                        <div class="form-group">
+                            <label for="title">Title <span class="text-danger">*</span></label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="title" 
+                                name="title" 
+                                placeholder="Enter book title"
+                                required
+                            />
+                        </div>
+
+                        <!-- Author (kötelező) -->
+                        <div class="form-group">
+                            <label for="author">Author <span class="text-danger">*</span></label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="author" 
+                                name="author" 
+                                placeholder="Enter author name"
+                                required
+                            />
+                        </div>
+
+                        <!-- ISBN (opcionális) -->
+                        <div class="form-group">
+                            <label for="isbn">ISBN</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="isbn" 
+                                name="isbn" 
+                                placeholder="978-0-452-28423-4"
+                            />
+                            <small class="form-text text-muted">Optional</small>
+                        </div>
+
+                        <!-- Genre (opcionális) -->
+                        <div class="form-group">
+                            <label for="genre">Genre</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="genre" 
+                                name="genre" 
+                                placeholder="Fiction, Science Fiction, Romance, etc."
+                            />
+                            <small class="form-text text-muted">Optional</small>
+                        </div>
+
+                        <div class="form-row">
+                            <!-- Publication Year (opcionális) -->
+                            <div class="form-group col-md-6">
+                                <label for="publication_year">Publication Year</label>
+                                <input 
+                                    type="number" 
+                                    class="form-control" 
+                                    id="publication_year" 
+                                    name="publication_year" 
+                                    placeholder="2024"
+                                    min="1000"
+                                    max="2100"
+                                />
+                                <small class="form-text text-muted">Optional</small>
+                            </div>
+
+                            <!-- Pages (opcionális) -->
+                            <div class="form-group col-md-6">
+                                <label for="pages">Pages</label>
+                                <input 
+                                    type="number" 
+                                    class="form-control" 
+                                    id="pages" 
+                                    name="pages" 
+                                    placeholder="328"
+                                    min="1"
+                                />
+                                <small class="form-text text-muted">Optional</small>
+                            </div>
+                        </div>
+
+                        <!-- Cover URL (opcionális) -->
+                        <div class="form-group">
+                            <label for="cover_url">Cover Image URL</label>
+                            <input 
+                                type="url" 
+                                class="form-control" 
+                                id="cover_url" 
+                                name="cover_url" 
+                                placeholder="https://example.com/cover.jpg"
+                            />
+                            <small class="form-text text-muted">Optional - Direct link to book cover image</small>
+                        </div>
+
+                        <!-- Description (opcionális) -->
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea 
+                                class="form-control" 
+                                id="description" 
+                                name="description" 
+                                rows="5"
+                                placeholder="Enter a brief description of the book..."
+                            ></textarea>
+                            <small class="form-text text-muted">Optional</small>
+                        </div>
+
+                        <hr>
+
+                        <!-- Gombok -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fa fa-check"></i> Add Book
+                            </button>
+                            <a href="/books" class="btn btn-secondary btn-lg">
+                                <i class="fa fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Helper info -->
+            <div class="alert alert-info mt-3">
+                <strong>Tip:</strong> Only <strong>Title</strong> and <strong>Author</strong> are required. 
+                All other fields are optional and can be added later.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
