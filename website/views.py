@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .decorators import admin_required
-from .models import Book
+from .models import Book, Review
 from . import db
 
 views = Blueprint('views', __name__)
@@ -21,7 +21,12 @@ def books():
 @login_required
 def book_detail(book_id):
     book = Book.query.get_or_404(book_id)
-    return render_template('book_detail.html', book=book, user=current_user)
+
+    reviews = Review.query.filter_by(book_id=book_id).order_by(Review.created_at.desc()).all()
+
+    user_review = Review.query.filter_by(book_id=book_id, user_id=current_user.id).first()
+
+    return render_template('book_detail.html', book=book,reviews=reviews, user_review=user_review, user=current_user)
 
 @views.route('/books/create', methods=['GET', 'POST'])
 @login_required
@@ -120,6 +125,90 @@ def delete_book(book_id):
     flash(f"Book '{book.title}' deleted successfully!", category='success')
     return redirect(url_for('views.books'))
 
+@views.route('/books/<int:book_id>/add-review', methods=['GET', 'POST'])
+@login_required
+def add_review(book_id):
+    book = Book.query.get_or_404(book_id)
+
+    existing_review = Review.query.filter_by(book_id=book_id, user_id=current_user.id).first()
+
+    if existing_review:
+        flash('You have already reviewed this book! You can edit your existing review.', category='error')
+        return redirect(url_for('views.book_detail', book_id=book_id))
+    
+    if request.method == 'POST':
+        rating = request.form.get('rating')
+        comment = request.form.get('comment')
+
+        if not rating:
+            flash('Rating is required!', category='error')
+        elif int(rating) < 1 or int(rating) > 5:
+            flash('Rating must be between 1 and 5!', category='error')
+        else:
+            new_review = Review(
+                user_id=current_user.id,
+                book_id=book_id,
+                rating=int(rating),
+                comment=comment if comment else None
+            )
+
+            db.session.add(new_review)
+            db.session.commit()
+
+            flash('Review added successfully!', category='success')
+            return redirect(url_for('views.book_detail', book_id=book_id))
+        
+    return render_template('add_review.html', book=book, user=current_user)
+
+@views.route('/reviews/<int:review_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_review(review_id):
+    review = Review.query.get_or_404(review_id)
+
+    if current_user.role != 'admin' and review.user_id != current_user.id:
+        flash('You can only edit your own reviews!', category='error')
+        return redirect(url_for('views.book_detail', book_id=review.book_id ))
+
+    if request.method == 'POST':        
+        rating = request.form.get('rating')
+        comment = request.form.get('comment')
+
+        if not rating:
+            flash('Rating is required!', category='error')
+        elif int(rating) < 1 or int(rating) > 5:
+            flash('Rating must be between 1 and 5!', category='error')
+        else:
+            # Update a review adatait
+            review.rating = int(rating)
+            review.comment = comment
+            
+            db.session.commit()
+            
+            flash('Reviw updated successfully!', category='success')
+            return redirect(url_for('views.book_detail', book_id=review.book_id))
+        
+
+    return render_template('edit_review.html', review=review, user=current_user)
+
+@views.route('/reviews/<int:review_id>/delete', methods=['POST'])
+@login_required
+def delete_review(review_id):
+    review = Review.query.get_or_404(review_id)
+    
+    # Ownership ellenőrzés: csak saját review-t vagy admin törölhet
+    if current_user.role != 'admin' and review.user_id != current_user.id:
+        flash('You can only delete your own reviews!', category='error')
+        return redirect(url_for('views.book_detail', book_id=review.book_id))
+    
+    # Mentjük a book_id-t mert törlés után nem lesz review.book_id
+    book_id = review.book_id
+    
+    # Törlés
+    db.session.delete(review)
+    db.session.commit()
+    
+    flash('Review deleted successfully!', category='success')
+    return redirect(url_for('views.book_detail', book_id=book_id))
 
 @views.route('/reading-lists')
 @login_required
