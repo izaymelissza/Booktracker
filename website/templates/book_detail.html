@@ -42,20 +42,48 @@
                 </form>
                 {% endif %}
                 
-                <a href="#" class="btn btn-success">
-                    <i class="fa fa-plus"></i> Add to Reading List
-                </a>
-                {% if user_review %}
-                    <a href="/reviews/{{ user_review.id }}/edit" class="btn btn-primary">
-                        <i class="fa fa-edit"></i> Edit Your Review
-                    </a>
-                    {% else %}
-                    <a href="/books/{{ book.id }}/add-review" class="btn btn-primary">
-                        <i class="fa fa-star"></i> Write Review
-                    </a>
-                    {% endif %}
+                <!-- Add to Reading List Dropdown -->
+                <div class="btn-group" style="display: inline;">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-plus"></i> Add to Reading List
+                    </button>
+                    <div class="dropdown-menu">
+                        <h6 class="dropdown-header">Add as:</h6>
+                        
+                        <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
+                            <input type="hidden" name="status" value="TO_READ">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fa fa-bookmark text-info"></i> To Read
+                            </button>
+                        </form>
+                        
+                        <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
+                            <input type="hidden" name="status" value="READING">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fa fa-book text-warning"></i> Currently Reading
+                            </button>
+                        </form>
+                        
+                        <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
+                            <input type="hidden" name="status" value="READ">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fa fa-check-circle text-success"></i> Read
+                            </button>
+                        </form>
+                    </div>
                 </div>
-
+                
+                {% if user_review %}
+                <a href="/reviews/{{ user_review.id }}/edit" class="btn btn-primary">
+                    <i class="fa fa-edit"></i> Edit Your Review
+                </a>
+                {% else %}
+                <a href="/books/{{ book.id }}/add-review" class="btn btn-primary">
+                    <i class="fa fa-star"></i> Write Review
+                </a>
+                {% endif %}
+            </div>
+            
             <!-- Részletek -->
             <div class="card">
                 <div class="card-header">

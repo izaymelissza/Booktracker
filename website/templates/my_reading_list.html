@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}My Reading List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>📚 My Reading List</h1>
+    <p class="text-muted">Track your reading progress and manage your book collection.</p>
+    
+    <hr>
+    
+    {% if reading_list %}
+    <div class="row">
+        <!-- TO_READ column -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fa fa-bookmark"></i> To Read</h5>
+                </div>
+                <div class="card-body">
+                    {% for entry in reading_list %}
+                        {% if entry.status == 'TO_READ' %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <a href="/books/{{ entry.book.id }}">{{ entry.book.title }}</a>
+                                </h6>
+                                <p class="card-text text-muted small">by {{ entry.book.author }}</p>
+                                <p class="text-muted small">Added: {{ entry.added_at.strftime('%b %d, %Y') }}</p>
+                                
+                                <!-- Action buttons -->
+                                <form method="POST" action="/reading-list/{{ entry.id }}/update-status" style="display: inline;">
+                                    <input type="hidden" name="status" value="READING">
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-book"></i> Start Reading
+                                    </button>
+                                </form>
+                                
+                                <form method="POST" action="/reading-list/{{ entry.id }}/remove" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Remove this book from your reading list?')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- READING column -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5><i class="fa fa-book"></i> Currently Reading</h5>
+                </div>
+                <div class="card-body">
+                    {% for entry in reading_list %}
+                        {% if entry.status == 'READING' %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <a href="/books/{{ entry.book.id }}">{{ entry.book.title }}</a>
+                                </h6>
+                                <p class="card-text text-muted small">by {{ entry.book.author }}</p>
+                                <p class="text-muted small">Started: {{ entry.started_reading_at or 'N/A' }}</p>
+                                
+                                <!-- Action buttons -->
+                                <form method="POST" action="/reading-list/{{ entry.id }}/update-status" style="display: inline;">
+                                    <input type="hidden" name="status" value="READ">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fa fa-check"></i> Mark as Read
+                                    </button>
+                                </form>
+                                
+                                <form method="POST" action="/reading-list/{{ entry.id }}/update-status" style="display: inline;">
+                                    <input type="hidden" name="status" value="TO_READ">
+                                    <button type="submit" class="btn btn-sm btn-secondary">
+                                        <i class="fa fa-undo"></i>
+                                    </button>
+                                </form>
+                                
+                                <form method="POST" action="/reading-list/{{ entry.id }}/remove" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Remove this book from your reading list?')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- READ column -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fa fa-check-circle"></i> Read</h5>
+                </div>
+                <div class="card-body">
+                    {% for entry in reading_list %}
+                        {% if entry.status == 'READ' %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <a href="/books/{{ entry.book.id }}">{{ entry.book.title }}</a>
+                                </h6>
+                                <p class="card-text text-muted small">by {{ entry.book.author }}</p>
+                                <p class="text-muted small">Finished: {{ entry.finished_reading_at or 'N/A' }}</p>
+                                
+                                <!-- Action buttons -->
+                                <form method="POST" action="/reading-list/{{ entry.id }}/update-status" style="display: inline;">
+                                    <input type="hidden" name="status" value="READING">
+                                    <button type="submit" class="btn btn-sm btn-warning">
+                                        <i class="fa fa-undo"></i> Re-read
+                                    </button>
+                                </form>
+                                
+                                <form method="POST" action="/reading-list/{{ entry.id }}/remove" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Remove this book from your reading list?')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <h4>Your reading list is empty!</h4>
+        <p>Start by browsing <a href="/books">books</a> and adding them to your reading list.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .decorators import admin_required
-from .models import Book, Review
+from .models import Book, Review, Reading_List
 from . import db
+from datetime import datetime
 
 views = Blueprint('views', __name__)
 
@@ -210,10 +211,73 @@ def delete_review(review_id):
     flash('Review deleted successfully!', category='success')
     return redirect(url_for('views.book_detail', book_id=book_id))
 
-@views.route('/reading-lists')
+@views.route('/my-reading-list')
 @login_required
-def reading_lists():
-    return "<p>reading lists</p>"
+def my_reading_list():
+    reading_list = Reading_List.query.filter_by(user_id=current_user.id).order_by(Reading_List.added_at.desc()).all()
+
+    return render_template('my_reading_list.html', reading_list=reading_list, user=current_user)
+
+@views.route('/books/<int:book_id>/add-to-reading-list', methods=['POST'])
+@login_required
+def add_to_reading_list(book_id):
+    book = Book.query.get_or_404(book_id)
+    
+    # Status a form-ból
+    status = request.form.get('status', 'TO_READ')
+    
+    # Ellenőrizzük: már hozzáadta-e a user
+    existing_entry = Reading_List.query.filter_by(user_id=current_user.id, book_id=book_id).first()
+    
+    if existing_entry:
+        # Ha már létezik → UPDATE a status-t!
+        existing_entry.status = status
+        
+        # Update dátumok status alapján (csak DATE, nem DateTime!)
+        if status == 'READING' and not existing_entry.started_reading_at:
+            existing_entry.started_reading_at = datetime.now().date()
+        elif status == 'READ' and not existing_entry.finished_reading_at:
+            existing_entry.finished_reading_at = datetime.now().date()
+        
+        db.session.commit()
+        
+        # Szöveges status-ok
+        status_text = {
+            'TO_READ': 'To Read',
+            'READING': 'Currently Reading',
+            'READ': 'Read'
+        }.get(status, status)
+        
+        flash(f'"{book.title}" moved to {status_text}!', category='success')
+    else:
+        # Új bejegyzés létrehozása
+        new_entry = Reading_List(
+            user_id=current_user.id,
+            book_id=book_id,
+            status=status
+        )
+        
+        # Dátumok beállítása (csak DATE, nem DateTime!)
+        if status == 'READING':
+            new_entry.started_reading_at = datetime.now().date()
+        elif status == 'READ':
+            new_entry.finished_reading_at = datetime.now().date()
+        
+        db.session.add(new_entry)
+        db.session.commit()
+        
+        # Szöveges status
+        status_text = {
+            'TO_READ': 'To Read',
+            'READING': 'Currently Reading',
+            'READ': 'Read'
+        }.get(status, status)
+        
+        flash(f'"{book.title}" added to {status_text}!', category='success')
+    
+    return redirect(url_for('views.book_detail', book_id=book_id))
+     
+
 
 @views.route('/stats')
 @login_required
