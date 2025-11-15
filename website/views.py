@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .decorators import admin_required
-from .models import Book, Review, Reading_List
+from .models import Book, Review, Reading_List, User
 from . import db
-from datetime import datetime
+from datetime import datetime, timedelta
 
 views = Blueprint('views', __name__)
 
@@ -343,7 +343,82 @@ def remove_from_reading_list(entry_id):
 @views.route('/stats')
 @login_required
 def stats():
-    return "<p>Stats</p>"
+    books_to_read = Reading_List.query.filter_by(user_id=current_user.id, status='TO_READ').count()
+    books_reading = Reading_List.query.filter_by(user_id=current_user.id, status='READING').count()
+    books_read = Reading_List.query.filter_by(user_id=current_user.id, status='READ').count()
+    my_reviews = Review.query.filter_by(user_id=current_user.id).count()
+
+    my_ratings = Review.query.filter_by(user_id=current_user.id).all()
+    avg_rating = sum([r.rating for r in my_ratings]) / len(my_ratings) if my_ratings else 0
+
+    #(hány 1*, 2*, 3*, 4*, 5* review-t írt)
+    rating_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    for review in my_ratings:
+        rating_counts[review.rating] += 1
+
+    #genres
+    read_books = Reading_List.query.filter_by(user_id=current_user.id, status='READ').all()
+    genre_counts = {}
+    total_pages_read = 0
+    for entry in read_books:
+        if entry.book.genre:
+            genre = entry.book.genre
+            genre_counts[genre] = genre_counts.get(genre, 0) + 1
+        if entry.book.pages:
+            total_pages_read += entry.book.pages
+
+    top_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+
+    total_books = Book.query.count()
+    total_reviews = Review.query.count()
+    total_users = User.query.count()
+    books_created = Book.query.filter_by(created_by=current_user.id).count()
+
+       # Utolsó 12 hónap generálása
+    today = datetime.now().date()
+    months_data = []
+    
+    for i in range(11, -1, -1):  # 12 hónap visszafelé
+        month_date = today - timedelta(days=30*i)
+        month_name = month_date.strftime('%B')
+        month_year = (month_date.year, month_date.month)
+        
+        # Könyvek befejezve ebben a hónapban
+        books_finished = Reading_List.query.filter(
+            Reading_List.user_id == current_user.id,
+            Reading_List.status == 'READ',
+            Reading_List.finished_reading_at != None,
+            db.extract('year', Reading_List.finished_reading_at) == month_year[0],
+            db.extract('month', Reading_List.finished_reading_at) == month_year[1]
+        ).all()
+        
+        # Összeszámoljuk a könyveket és oldalakat
+        books_count = len(books_finished)
+        pages_count = sum([entry.book.pages for entry in books_finished if entry.book.pages])
+        
+        months_data.append({
+            'month': month_name,
+            'books': books_count,
+            'pages': pages_count
+        })
+
+    return render_template('stats.html', 
+                          books_to_read=books_to_read,
+                          books_reading=books_reading,
+                          books_read=books_read,
+                          my_reviews=my_reviews,
+                          avg_rating=avg_rating,
+                          rating_counts=rating_counts,
+                          genre_counts=genre_counts,
+                          top_genres=top_genres,
+                          total_pages_read=total_pages_read,
+                          total_books=total_books,
+                          total_reviews=total_reviews,
+                          total_users=total_users,
+                          books_created=books_created,
+                          months_data=months_data,
+                          user=current_user)
+
 
 @views.route('/admin/test')
 @login_required
