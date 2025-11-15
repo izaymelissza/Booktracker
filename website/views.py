@@ -277,7 +277,48 @@ def add_to_reading_list(book_id):
     
     return redirect(url_for('views.book_detail', book_id=book_id))
      
-
+@views.route('/reading-list/<int:entry_id>/update-status', methods=['POST'])
+@login_required
+def update_reading_status(entry_id):
+    entry = Reading_List.query.get_or_404(entry_id)
+    
+    # Ownership ellenőrzés: csak saját bejegyzést
+    if entry.user_id != current_user.id:
+        flash('You can only update your own reading list!', category='error')
+        return redirect(url_for('views.my_reading_list'))
+    
+    # Új status a form-ból
+    new_status = request.form.get('status')
+    
+    if not new_status or new_status not in ['TO_READ', 'READING', 'READ']:
+        flash('Invalid status!', category='error')
+        return redirect(url_for('views.my_reading_list'))
+    
+    # Update status
+    old_status = entry.status
+    entry.status = new_status
+    
+    # Update dátumok status alapján
+    if new_status == 'READING' and not entry.started_reading_at:
+        entry.started_reading_at = datetime.now().date()
+    elif new_status == 'READ' and not entry.finished_reading_at:
+        entry.finished_reading_at = datetime.now().date()
+    elif new_status == 'TO_READ':
+        # Ha visszaállítjuk TO_READ-re, töröljük a dátumokat
+        entry.started_reading_at = None
+        entry.finished_reading_at = None
+    
+    db.session.commit()
+    
+    # Flash üzenet
+    status_text = {
+        'TO_READ': 'To Read',
+        'READING': 'Currently Reading',
+        'READ': 'Read'
+    }.get(new_status, new_status)
+    
+    flash(f'"{entry.book.title}" moved to {status_text}!', category='success')
+    return redirect(url_for('views.my_reading_list'))
 
 @views.route('/stats')
 @login_required

@@ -23,7 +23,7 @@ class Reading_List(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
     status = db.Column(db.Enum('TO_READ', 'READING', 'READ'), default='TO_READ')
-    added_at = db.Column(db.Date(), nullable=True)
+    added_at = db.Column(db.Date(), default=func.current_date())
     started_reading_at = db.Column(db.Date(), nullable=True)
     finished_reading_at = db.Column(db.Date(), nullable=True)
     
