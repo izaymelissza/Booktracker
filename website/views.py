@@ -320,6 +320,26 @@ def update_reading_status(entry_id):
     flash(f'"{entry.book.title}" moved to {status_text}!', category='success')
     return redirect(url_for('views.my_reading_list'))
 
+@views.route('/reading-list/<int:entry_id>/remove', methods=['POST'])
+@login_required
+def remove_from_reading_list(entry_id):
+    entry = Reading_List.query.get_or_404(entry_id)
+    
+    # Ownership ellenőrzés: csak saját bejegyzést
+    if entry.user_id != current_user.id:
+        flash('You can only remove your own reading list entries!', category='error')
+        return redirect(url_for('views.my_reading_list'))
+    
+    # Mentjük a könyv címét az üzenethez
+    book_title = entry.book.title
+    
+    # Törlés
+    db.session.delete(entry)
+    db.session.commit()
+    
+    flash(f'"{book_title}" removed from your reading list!', category='success')
+    return redirect(url_for('views.my_reading_list'))
+
 @views.route('/stats')
 @login_required
 def stats():
