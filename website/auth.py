@@ -1,12 +1,13 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import db
+from . import db, limiter
 from flask_login import login_user, login_required, logout_user, current_user
+import re
 
 
 auth = Blueprint('auth', __name__)
-
+@limiter.limit("5 per 15 minutes", methods=["POST"])
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -32,6 +33,7 @@ def logout():
     return redirect(url_for('auth.login'))
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
+@limiter.limit("3 per hour", methods=["POST"])
 def sign_up():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -48,8 +50,12 @@ def sign_up():
             flash('There is an account already with this email', category='error')
         elif user:
             flash('Username already exists.', category='error')
-        elif len(email) < 4:
-            flash('Email is not the standard format.', category='error')
+        elif not is_valid_email(email):
+            flash('Invalid email format.', category='error')
+        elif len(username) < 3:
+            flash('Username must be at least 3 characters.', category='error')
+        elif len(username) > 20:
+            flash('Username too long (max 20).', category='error')
         elif len(first_name) < 2:
             flash('First name must be greater than 1 characters', category='error')
         elif password1 != password2:
@@ -65,3 +71,7 @@ def sign_up():
             return redirect(url_for('views.home'))
      
     return render_template("sign_up.html", user=current_user)
+
+def is_valid_email(email):
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None

@@ -2,10 +2,17 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from flask_limiter import Limiter  # ← ÚJ!
+from flask_limiter.util import get_remote_address  # ← ÚJ!
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
+limiter = Limiter(
+    key_func=get_remote_address,  # IP cím alapján
+    default_limits=["200 per day", "50 per hour"],  # Alapértelmezett limitek
+    storage_uri="memory://"  # Memóriában tárolja (egyszerű, de átmenetileg)
+)
 
 def create_app():
     app = Flask(__name__)
