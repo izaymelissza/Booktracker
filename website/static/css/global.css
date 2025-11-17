@@ -1,6 +1,3 @@
-/* ============================================
-   GLOBAL STYLES - Only custom overrides
-   ============================================ */
 
 :root {
   --sage-green: #B8D4B8;
@@ -13,9 +10,7 @@
   --border-gray: #E0E0E0;
 }
 
-/* ============================================
-   BASE OVERRIDES
-   ============================================ */
+/*overrides*/
 
 body {
   background-color: var(--warm-cream);
