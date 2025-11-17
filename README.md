@@ -12,7 +12,7 @@ Flask alkalmazás könyvek követésére, értékelésekkel és olvasási listá
 ## Technológiák
 
 - **Backend:** Flask, SQLAlchemy
-- **Adatbázis:** SQLite
+- **Adatbázis:** SQLAlchemy
 - **Autentikáció:** Flask-Login, Werkzeug
 - **Frontend:** Bootstrap 4, Jinja2
 - **Tervezett:** React integráció
