@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="container mt-4">
     <!-- Header -->
     <div class="books-header">
@@ -24,7 +23,7 @@
             {% if book.cover_url %}
                 <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="book-cover-small">
             {% else %}
-                <div class="book-cover-placeholder">📚</div>
+                <div class="book-cover-placeholder"></div>
             {% endif %}
             
             <!-- Info -->
@@ -47,15 +46,15 @@
                 <div class="book-actions">
                     <a href="/books/{{ book.id }}">Details...</a>
                     
+                    {% if current_user.role == 'admin' or book.created_by == current_user.id %}
                     <div class="action-buttons">
-                        {% if current_user.role == 'admin' or book.created_by == current_user.id %}
-                        <a href="/books/{{ book.id }}/edit" class="btn btn-warning btn-sm-custom">Edit</a>
-                        <form method="POST" action="/books/{{ book.id }}/delete" style="display: inline;">
-                            <button type="submit" class="btn btn-danger btn-sm-custom" 
+                        <a href="/books/{{ book.id }}/edit" class="btn btn-secondary btn-sm">Edit</a>
+                        <form method="POST" action="/books/{{ book.id }}/delete" class="d-inline">
+                            <button type="submit" class="btn btn-secondary btn-sm" 
                                     onclick="return confirm('Delete this book?')">Delete</button>
                         </form>
-                        {% endif %}
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

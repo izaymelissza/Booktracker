@@ -1,355 +1,148 @@
 {% extends "base.html" %}
 {% block title %}Statistics{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stats.css') }}" />
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
-    <h1>Statistics</h1>
-    <p class="text-muted">Your reading activity and insights.</p>
-    
-    <hr>
+    <!-- Header -->
+    <div class="stats-header">
+        <h2>Your Statistics</h2>
+        <p>Track your reading progress and achievements</p>
+    </div>
     
     <!-- Top Summary Cards -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card text-center bg-info text-white">
-                <div class="card-body">
-                    <h1>{{ books_to_read }}</h1>
-                    <p class="mb-0">To Read</p>
-                </div>
-            </div>
+    <div class="stats-cards">
+        <div class="stat-card">
+            <h5>To Read</h5>
+            <h2>{{ books_to_read }}</h2>
         </div>
         
-        <div class="col-md-3">
-            <div class="card text-center bg-warning text-white">
-                <div class="card-body">
-                    <h1>{{ books_reading }}</h1>
-                    <p class="mb-0">Currently Reading</p>
-                </div>
-            </div>
+        <div class="stat-card">
+            <h5>Currently Reading</h5>
+            <h2>{{ books_reading }}</h2>
         </div>
         
-        <div class="col-md-3">
-            <div class="card text-center bg-success text-white">
-                <div class="card-body">
-                    <h1>{{ books_read }}</h1>
-                    <p class="mb-0">Books Read</p>
-                </div>
-            </div>
+        <div class="stat-card highlight">
+            <h5>Books Read</h5>
+            <h2>{{ books_read }}</h2>
         </div>
         
-        <div class="col-md-3">
-            <div class="card text-center bg-primary text-white">
-                <div class="card-body">
-                    <h1>{{ total_pages_read }}</h1>
-                    <p class="mb-0">Pages Read</p>
-                </div>
-            </div>
+        <div class="stat-card highlight">
+            <h5>Pages Read</h5>
+            <h2>{{ total_pages_read }}</h2>
         </div>
     </div>
     
-    <!-- Charts Row 1 -->
-    <div class="row mt-5">
-        <!-- Reading List Pie Chart -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Reading List Breakdown</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="readingListChart"></canvas>
-                </div>
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <!-- Reading List Breakdown -->
+        <div class="chart-container">
+            <h3 class="chart-title">Reading List Breakdown</h3>
+            <canvas id="readingListChart"></canvas>
+        </div>
+        
+        <!-- Rating Distribution -->
+        <div class="chart-container">
+            <h3 class="chart-title">Your Rating Distribution</h3>
+            <canvas id="ratingsChart"></canvas>
+            <div class="text-center mt-3">
+                <h4 class="chart-subtitle">Average Rating: {{ "%.1f"|format(avg_rating) }} / 5</h4>
             </div>
         </div>
         
-        <!-- Star Ratings Bar Chart -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Your Rating Distribution</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="ratingsChart"></canvas>
-                    <div class="text-center mt-3">
-                        <h4>Average: {{ "%.1f"|format(avg_rating) }} / 5</h4>
-                    </div>
-                </div>
-            </div>
+        <!-- Top Genres -->
+        <div class="chart-container">
+            <h3 class="chart-title">Top Genres You've Read</h3>
+            <canvas id="genresChart"></canvas>
         </div>
-    </div>
-    
-    <!-- Charts Row 2 -->
-    <div class="row mt-4">
-        <!-- Genres Bar Chart -->
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Top Genres You've Read</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="genresChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Monthly Progress Chart -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Number of Books and Pages (Last 12 Months)</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="monthlyChart"></canvas>
-                    <div class="text-center mt-3">
-                        <p class="mb-0"><strong>{{ books_read }} books</strong>, <strong>{{ total_pages_read }} pages</strong></p>
-                    </div>
-                </div>
+        <!-- Monthly Progress -->
+        <div class="chart-container">
+            <h3 class="chart-title">Monthly Reading Progress</h3>
+            <canvas id="monthlyChart"></canvas>
+            <div class="text-center mt-3">
+                <p class="chart-subtitle"><strong>{{ books_read }} books</strong> and <strong>{{ total_pages_read }} pages</strong> in the last 12 months</p>
             </div>
         </div>
     </div>
     
     <!-- Platform Stats -->
-    <hr class="mt-5">
-    <h3>Platform Stats</h3>
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1 class="display-4">{{ total_books }}</h1>
-                    <p class="text-muted mb-0">Total Books</p>
-                </div>
+    <div class="platform-stats">
+        <h3>Platform Statistics</h3>
+        <div class="platform-cards">
+            <div class="platform-card">
+                <h1>{{ total_books }}</h1>
+                <p>Total Books</p>
             </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1 class="display-4">{{ total_reviews }}</h1>
-                    <p class="text-muted mb-0">Total Reviews</p>
-                </div>
+            
+            <div class="platform-card">
+                <h1>{{ total_reviews }}</h1>
+                <p>Total Reviews</p>
             </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h1 class="display-4">{{ total_users }}</h1>
-                    <p class="text-muted mb-0">Total Users</p>
-                </div>
+            
+            <div class="platform-card">
+                <h1>{{ total_users }}</h1>
+                <p>Total Users</p>
             </div>
         </div>
     </div>
     
-    <!-- Quick Links -->
-    <div class="card mt-4 mb-5">
-        <div class="card-header">
-            <h5>Quick Actions</h5>
-        </div>
-        <div class="card-body">
-            <a href="/books" class="btn btn-primary">Browse Books</a>
-            <a href="/my-reading-list" class="btn btn-success">My Reading List</a>
-            <a href="/books/create" class="btn btn-warning">Add New Book</a>
-        </div>
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h5>Quick Actions</h5>
+        <a href="/books" class="btn btn-secondary">Browse Books</a>
+        <a href="/my-reading-list" class="btn btn-success">My Reading List</a>
+        <a href="/books/create" class="btn btn-secondary">Add New Book</a>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
+<!-- Pass data to JavaScript -->
 <script>
-// 1. Reading List Pie Chart
-const readingListCtx = document.getElementById('readingListChart').getContext('2d');
-new Chart(readingListCtx, {
-    type: 'pie',
-    data: {
-        labels: ['To Read', 'Currently Reading', 'Read'],
-        datasets: [{
-            data: [{{ books_to_read }}, {{ books_reading }}, {{ books_read }}],
-            backgroundColor: [
-                'rgba(23, 162, 184, 0.8)',  // Info blue
-                'rgba(255, 193, 7, 0.8)',   // Warning yellow
-                'rgba(40, 167, 69, 0.8)'    // Success green
-            ],
-            borderColor: [
-                'rgba(23, 162, 184, 1)',
-                'rgba(255, 193, 7, 1)',
-                'rgba(40, 167, 69, 1)'
-            ],
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'bottom'
-            }
-        }
-    }
-});
-
-// 2. Star Ratings Bar Chart
-const ratingsCtx = document.getElementById('ratingsChart').getContext('2d');
-new Chart(ratingsCtx, {
-    type: 'bar',
-    data: {
-        labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
-        datasets: [{
-            label: 'Number of Reviews',
-            data: [
-                {{ rating_counts[1] }},
-                {{ rating_counts[2] }},
-                {{ rating_counts[3] }},
-                {{ rating_counts[4] }},
-                {{ rating_counts[5] }}
-            ],
-            backgroundColor: 'rgba(0, 123, 255, 0.7)',
-            borderColor: 'rgba(0, 123, 255, 1)',
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false
-            }
-        }
-    }
-});
-
-// 3. Genres Bar Chart
-const genresCtx = document.getElementById('genresChart').getContext('2d');
-new Chart(genresCtx, {
-    type: 'bar',
-    data: {
-        labels: [
-            {% for genre, count in top_genres %}
-            '{{ genre }}'{% if not loop.last %},{% endif %}
-            {% endfor %}
-        ],
-        datasets: [{
-            label: 'Books Read',
-            data: [
-                {% for genre, count in top_genres %}
-                {{ count }}{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ],
-            backgroundColor: 'rgba(40, 167, 69, 0.7)',
-            borderColor: 'rgba(40, 167, 69, 1)',
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        indexAxis: 'y',  // Horizontal bar chart
-        scales: {
-            x: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false
-            }
-        }
-    }
-});
-
-// 4. Monthly Progress Line Chart 
-const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-new Chart(monthlyCtx, {
-    type: 'line',
-    data: {
-        labels: [
-            {% for month in months_data %}
-            '{{ month.month }}'{% if not loop.last %},{% endif %}
-            {% endfor %}
-        ],
-        datasets: [
-            {
-                label: 'Books read',
-                data: [
-                    {% for month in months_data %}
-                    {{ month.books }}{% if not loop.last %},{% endif %}
-                    {% endfor %}
-                ],
-                borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                yAxisID: 'y-books',
-                tension: 0.3,
-                fill: true
-            },
-            {
-                label: 'Pages read',
-                data: [
-                    {% for month in months_data %}
-                    {{ month.pages }}{% if not loop.last %},{% endif %}
-                    {% endfor %}
-                ],
-                borderColor: 'rgba(255, 99, 132, 1)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                yAxisID: 'y-pages',
-                tension: 0.3,
-                fill: true
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        interaction: {
-            mode: 'index',
-            intersect: false
-        },
-        plugins: {
-            legend: {
-                position: 'top'
-            }
-        },
-        scales: {
-            'y-books': {
-                type: 'linear',
-                display: true,
-                position: 'left',
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'No. of books'
-                },
-                ticks: {
-                    stepSize: 1
-                }
-            },
-            'y-pages': {
-                type: 'linear',
-                display: true,
-                position: 'right',
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'No. of pages'
-                },
-                grid: {
-                    drawOnChartArea: false
-                }
-            }
-        }
-    }
-});
+window.statsData = {
+    readingList: [{{ books_to_read }}, {{ books_reading }}, {{ books_read }}],
+    ratings: [
+        {{ rating_counts[1] }},
+        {{ rating_counts[2] }},
+        {{ rating_counts[3] }},
+        {{ rating_counts[4] }},
+        {{ rating_counts[5] }}
+    ],
+    genreLabels: [
+        {% for genre, count in top_genres %}
+        '{{ genre }}'{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ],
+    genres: [
+        {% for genre, count in top_genres %}
+        {{ count }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ],
+    monthLabels: [
+        {% for month in months_data %}
+        '{{ month.month }}'{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ],
+    monthlyBooks: [
+        {% for month in months_data %}
+        {{ month.books }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ],
+    monthlyPages: [
+        {% for month in months_data %}
+        {{ month.pages }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+};
 </script>
 
-</script>
-
+<!-- Our custom stats charts -->
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
 {% endblock %}

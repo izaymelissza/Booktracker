@@ -6,13 +6,10 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="container mt-4">
     <!-- Back button -->
     <div class="mb-3">
-        <a href="/books" style="color: #5D5D5D; text-decoration: none; font-weight: 600;">
-            ← Back
-        </a>
+        <a href="/books" class="back-link">← Back</a>
     </div>
     
     <div class="detail-container">
@@ -21,7 +18,7 @@
             {% if book.cover_url %}
                 <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="book-cover-large">
             {% else %}
-                <div class="book-cover-large-placeholder">📚</div>
+                <div class="book-cover-large-placeholder"></div>
             {% endif %}
         </div>
         
@@ -34,15 +31,15 @@
                     <div class="book-author-large">{{ book.author }}</div>
                 </div>
                 
+                {% if current_user.role == 'admin' or book.created_by == current_user.id %}
                 <div class="header-actions">
-                    {% if current_user.role == 'admin' or book.created_by == current_user.id %}
-                    <a href="/books/{{ book.id }}/edit" class="btn btn-sm btn-warning">Edit</a>
-                    <form method="POST" action="/books/{{ book.id }}/delete" style="display: inline;">
-                        <button type="submit" class="btn btn-sm btn-danger" 
+                    <a href="/books/{{ book.id }}/edit" class="btn btn-sm btn-secondary">Edit</a>
+                    <form method="POST" action="/books/{{ book.id }}/delete" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-secondary" 
                                 onclick="return confirm('Delete?')">Delete</button>
                     </form>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
             
             <!-- Description -->
@@ -53,22 +50,22 @@
             {% endif %}
             
             <!-- Add to Reading List Button -->
-            <div class="dropdown" style="display: inline-block; margin-bottom: 2rem;">
+            <div class="dropdown d-inline-block">
                 <button class="add-to-list-btn dropdown-toggle" type="button" data-toggle="dropdown">
                     Add to your reading list
                 </button>
                 <div class="dropdown-menu">
                     <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
                         <input type="hidden" name="status" value="TO_READ">
-                        <button type="submit" class="dropdown-item">📘 To Read</button>
+                        <button type="submit" class="dropdown-item">To Read</button>
                     </form>
                     <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
                         <input type="hidden" name="status" value="READING">
-                        <button type="submit" class="dropdown-item">📖 Currently Reading</button>
+                        <button type="submit" class="dropdown-item">Currently Reading</button>
                     </form>
                     <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
                         <input type="hidden" name="status" value="READ">
-                        <button type="submit" class="dropdown-item">✅ Read</button>
+                        <button type="submit" class="dropdown-item">Read</button>
                     </form>
                 </div>
             </div>
@@ -98,7 +95,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="reviews-header">Reviews</h3>
                     {% if not user_review %}
-                    <a href="/books/{{ book.id }}/add-review" class="btn btn-primary btn-sm">Write Review</a>
+                    <a href="/books/{{ book.id }}/add-review" class="btn btn-success btn-sm">Write Review</a>
                     {% endif %}
                 </div>
                 
@@ -109,9 +106,9 @@
                         <div class="mb-2">
                             {% for i in range(1, 6) %}
                                 {% if i <= review.rating %}
-                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star"></i>
                                 {% else %}
-                                <i class="fa fa-star-o text-muted"></i>
+                                <i class="fa fa-star-o"></i>
                                 {% endif %}
                             {% endfor %}
                             <strong class="ml-2">{{ review.rating }}/5</strong>
@@ -131,9 +128,9 @@
                         <!-- Actions -->
                         {% if current_user.id == review.user_id or current_user.role == 'admin' %}
                         <div class="mt-2">
-                            <a href="/reviews/{{ review.id }}/edit" class="btn btn-sm btn-outline-warning">Edit</a>
-                            <form method="POST" action="/reviews/{{ review.id }}/delete" style="display: inline;">
-                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                            <a href="/reviews/{{ review.id }}/edit" class="btn btn-sm btn-secondary">Edit</a>
+                            <form method="POST" action="/reviews/{{ review.id }}/delete" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-secondary"
                                         onclick="return confirm('Delete review?')">Delete</button>
                             </form>
                         </div>

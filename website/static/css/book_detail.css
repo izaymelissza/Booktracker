@@ -1,7 +1,8 @@
 /* ============================================
-   BOOK DETAIL PAGE STYLES
+   BOOK DETAIL PAGE
    ============================================ */
 
+/* Layout */
 .detail-container {
   display: flex;
   gap: 3rem;
@@ -16,6 +17,18 @@
   flex: 1;
 }
 
+/* Back link */
+.back-link {
+  color: #5D5D5D;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back-link:hover {
+  color: #B8D4B8;
+}
+
+/* Cover */
 .book-cover-large {
   width: 100%;
   border-radius: 8px;
@@ -27,13 +40,9 @@
   height: 450px;
   background-color: #B8D4B8;
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 5rem;
-  color: white;
 }
 
+/* Header */
 .book-header {
   display: flex;
   justify-content: space-between;
@@ -62,6 +71,12 @@
   margin-bottom: 2rem;
 }
 
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Add to list button */
 .add-to-list-btn {
   background-color: #B8D4B8;
   color: white;
@@ -71,12 +86,14 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-bottom: 2rem;
 }
 
 .add-to-list-btn:hover {
   background-color: #9BC49B;
 }
 
+/* Info box */
 .info-box {
   background-color: #F9F9F9;
   border-radius: 8px;
@@ -105,6 +122,7 @@
   color: #666;
 }
 
+/* Reviews */
 .reviews-section {
   margin-top: 2rem;
 }
@@ -117,15 +135,10 @@
 }
 
 .review-item-custom {
-  background-color: var(--white);
+  background-color: white;
   border-radius: 4px;
   padding: 1.5rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   border-left: 3px solid #B8D4B8;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
 }

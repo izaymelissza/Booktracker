@@ -1,7 +1,8 @@
 /* ============================================
-   BOOKS LIST PAGE STYLES
+   BOOKS LIST PAGE
    ============================================ */
 
+/* Header */
 .books-header {
   display: flex;
   justify-content: space-between;
@@ -33,6 +34,7 @@
   border-bottom-color: #9BC49B;
 }
 
+/* Book card */
 .book-card {
   background: white;
   border-radius: 8px;
@@ -49,6 +51,7 @@
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
+/* Cover */
 .book-cover-small {
   width: 100px;
   height: 150px;
@@ -63,14 +66,10 @@
   height: 150px;
   background-color: #B8D4B8;
   border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: white;
   flex-shrink: 0;
 }
 
+/* Info */
 .book-info {
   flex: 1;
   display: flex;
@@ -106,6 +105,7 @@
   gap: 0.3rem;
 }
 
+/* Actions */
 .book-actions {
   display: flex;
   justify-content: space-between;

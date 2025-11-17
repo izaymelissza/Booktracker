@@ -1,0 +1,177 @@
+/* ============================================
+   READING LIST PAGE STYLES
+   ============================================ */
+
+.reading-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.reading-list-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #5D5D5D;
+  margin: 0;
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #B8D4B8;
+}
+
+.section-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: #5D5D5D;
+  margin: 0;
+}
+
+.section-header .badge {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.8rem;
+  background-color: #E8E8E8;
+  color: #5D5D5D;
+  border-radius: 4px;
+}
+
+/* Book Entry Card */
+.reading-entry {
+  background: white;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  gap: 1.2rem;
+  border: 1px solid #E0E0E0;
+  transition: all 0.2s ease;
+}
+
+.reading-entry:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.entry-cover {
+  flex-shrink: 0;
+}
+
+.entry-cover-img {
+  width: 80px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.entry-cover-placeholder {
+  width: 80px;
+  height: 120px;
+  background-color: #B8D4B8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+}
+
+.entry-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.entry-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5D5D5D;
+  margin-bottom: 0.3rem;
+}
+
+.entry-title a {
+  color: #5D5D5D;
+  text-decoration: none;
+}
+
+.entry-title a:hover {
+  color: #B8D4B8;
+}
+
+.entry-author {
+  font-size: 0.95rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.entry-meta {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 0.8rem;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.entry-actions .btn {
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border-radius: 8px;
+  border: 2px dashed #E0E0E0;
+}
+
+.empty-state h4 {
+  font-family: 'Playfair Display', serif;
+  color: #5D5D5D;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+/* Section with no books */
+.section-empty {
+  text-align: center;
+  padding: 2rem;
+  background: #F9F9F9;
+  border-radius: 4px;
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reading-entry {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .entry-content {
+    align-items: center;
+  }
+
+  .entry-actions {
+    justify-content: center;
+  }
+}

@@ -3,22 +3,20 @@
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Vissza gomb -->
+    <!-- Back button -->
     <div class="mb-3">
-        <a href="/books/{{ book.id }}" class="btn btn-secondary">
-            <i class="fa fa-arrow-left"></i> Back to Book
-        </a>
+        <a href="/books/{{ book.id }}" class="btn btn-secondary">← Back to Book</a>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h3>✏️ Edit Book</h3>
+                    <h3>Edit Book</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST">
-                        <!-- Title (kötelező) -->
+                        <!-- Title (required) -->
                         <div class="form-group">
                             <label for="title">Title <span class="text-danger">*</span></label>
                             <input 
@@ -32,7 +30,7 @@
                             />
                         </div>
 
-                        <!-- Author (kötelező) -->
+                        <!-- Author (required) -->
                         <div class="form-group">
                             <label for="author">Author <span class="text-danger">*</span></label>
                             <input 
@@ -46,7 +44,7 @@
                             />
                         </div>
 
-                        <!-- ISBN (opcionális) -->
+                        <!-- ISBN (optional) -->
                         <div class="form-group">
                             <label for="isbn">ISBN</label>
                             <input 
@@ -60,7 +58,7 @@
                             <small class="form-text text-muted">Optional</small>
                         </div>
 
-                        <!-- Genre (opcionális) -->
+                        <!-- Genre (optional) -->
                         <div class="form-group">
                             <label for="genre">Genre</label>
                             <input 
@@ -75,7 +73,7 @@
                         </div>
 
                         <div class="form-row">
-                            <!-- Publication Year (opcionális) -->
+                            <!-- Publication Year (optional) -->
                             <div class="form-group col-md-6">
                                 <label for="publication_year">Publication Year</label>
                                 <input 
@@ -91,7 +89,7 @@
                                 <small class="form-text text-muted">Optional</small>
                             </div>
 
-                            <!-- Pages (opcionális) -->
+                            <!-- Pages (optional) -->
                             <div class="form-group col-md-6">
                                 <label for="pages">Pages</label>
                                 <input 
@@ -107,7 +105,7 @@
                             </div>
                         </div>
 
-                        <!-- Cover URL (opcionális) -->
+                        <!-- Cover URL (optional) -->
                         <div class="form-group">
                             <label for="cover_url">Cover Image URL</label>
                             <input 
@@ -121,7 +119,7 @@
                             <small class="form-text text-muted">Optional - Direct link to book cover image</small>
                         </div>
 
-                        <!-- Description (opcionális) -->
+                        <!-- Description (optional) -->
                         <div class="form-group">
                             <label for="description">Description</label>
                             <textarea 
@@ -136,21 +134,17 @@
 
                         <hr>
 
-                        <!-- Gombok -->
+                        <!-- Buttons -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fa fa-save"></i> Save Changes
-                            </button>
-                            <a href="/books/{{ book.id }}" class="btn btn-secondary btn-lg">
-                                <i class="fa fa-times"></i> Cancel
-                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">Save Changes</button>
+                            <a href="/books/{{ book.id }}" class="btn btn-secondary btn-lg">Cancel</a>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Info box -->
-            <div class="alert alert-warning mt-3">
+            <div class="alert alert-info mt-3">
                 <strong>Note:</strong> You are editing: <strong>{{ book.title }}</strong> by {{ book.author }}
             </div>
         </div>
