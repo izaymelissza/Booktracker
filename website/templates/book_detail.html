@@ -1,210 +1,148 @@
 {% extends "base.html" %}
 {% block title %}{{ book.title }}{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/book_detail.css') }}" />
+{% endblock %}
+
 {% block content %}
+
 <div class="container mt-4">
-    <!-- Vissza gomb -->
+    <!-- Back button -->
     <div class="mb-3">
-        <a href="/books" class="btn btn-secondary">
-            <i class="fa fa-arrow-left"></i> Back to Books
+        <a href="/books" style="color: #5D5D5D; text-decoration: none; font-weight: 600;">
+            ← Back
         </a>
     </div>
-
-    <div class="row">
-        <!-- Bal oldal: Borítókép -->
-        <div class="col-md-3">
+    
+    <div class="detail-container">
+        <!-- Left: Book Cover -->
+        <div class="detail-left">
             {% if book.cover_url %}
-            <img src="{{ book.cover_url }}" class="img-fluid rounded shadow" alt="{{ book.title }}">
+                <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="book-cover-large">
             {% else %}
-            <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded" 
-                 style="height: 400px; font-size: 24px;">
-                📚 No Cover
-            </div>
+                <div class="book-cover-large-placeholder">📚</div>
             {% endif %}
         </div>
-
-        <!-- Jobb oldal: Részletek -->
-        <div class="col-md-9">
-            <h1>{{ book.title }}</h1>
-            <h4 class="text-muted">by {{ book.author }}</h4>
-            
-            <!-- Action gombok -->
-            <div class="mt-3 mb-4">
-                {% if current_user.role == 'admin' or book.created_by == current_user.id %}
-                <a href="/books/{{ book.id }}/edit" class="btn btn-warning">
-                    <i class="fa fa-edit"></i> Edit Book
-                </a>
-                <form method="POST" action="/books/{{ book.id }}/delete" style="display: inline;">
-                    <button type="submit" class="btn btn-danger" 
-                            onclick="return confirm('Are you sure you want to delete this book?')">
-                        <i class="fa fa-trash"></i> Delete Book
-                    </button>
-                </form>
-                {% endif %}
-                
-                <!-- Add to Reading List Dropdown -->
-                <div class="btn-group" style="display: inline;">
-                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-plus"></i> Add to Reading List
-                    </button>
-                    <div class="dropdown-menu">
-                        <h6 class="dropdown-header">Add as:</h6>
-                        
-                        <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
-                            <input type="hidden" name="status" value="TO_READ">
-                            <button type="submit" class="dropdown-item">
-                                <i class="fa fa-bookmark text-info"></i> To Read
-                            </button>
-                        </form>
-                        
-                        <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
-                            <input type="hidden" name="status" value="READING">
-                            <button type="submit" class="dropdown-item">
-                                <i class="fa fa-book text-warning"></i> Currently Reading
-                            </button>
-                        </form>
-                        
-                        <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
-                            <input type="hidden" name="status" value="READ">
-                            <button type="submit" class="dropdown-item">
-                                <i class="fa fa-check-circle text-success"></i> Read
-                            </button>
-                        </form>
-                    </div>
+        
+        <!-- Right: Book Info -->
+        <div class="detail-right">
+            <!-- Header with title and actions -->
+            <div class="book-header">
+                <div>
+                    <h1 class="book-title-large">{{ book.title }}</h1>
+                    <div class="book-author-large">{{ book.author }}</div>
                 </div>
                 
-                {% if user_review %}
-                <a href="/reviews/{{ user_review.id }}/edit" class="btn btn-primary">
-                    <i class="fa fa-edit"></i> Edit Your Review
-                </a>
-                {% else %}
-                <a href="/books/{{ book.id }}/add-review" class="btn btn-primary">
-                    <i class="fa fa-star"></i> Write Review
-                </a>
-                {% endif %}
+                <div class="header-actions">
+                    {% if current_user.role == 'admin' or book.created_by == current_user.id %}
+                    <a href="/books/{{ book.id }}/edit" class="btn btn-sm btn-warning">Edit</a>
+                    <form method="POST" action="/books/{{ book.id }}/delete" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" 
+                                onclick="return confirm('Delete?')">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
             </div>
             
-            <!-- Részletek -->
-            <div class="card">
-                <div class="card-header">
-                    <h5>Book Details</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th style="width: 150px;">ISBN:</th>
-                            <td>{{ book.isbn or 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Genre:</th>
-                            <td>{{ book.genre or 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Publication Year:</th>
-                            <td>{{ book.publication_year or 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Pages:</th>
-                            <td>{{ book.pages or 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Added by:</th>
-                            <td>
-                                {% if book.creator %}
-                                    {{ book.creator.username }}
-                                    {% if book.creator.role == 'admin' %}
-                                    <span class="badge badge-danger">Admin</span>
-                                    {% endif %}
-                                {% else %}
-                                    Unknown
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Leírás -->
+            <!-- Description -->
             {% if book.description %}
-            <div class="card mt-3">
-                <div class="card-header">
-                    <h5>Description</h5>
-                </div>
-                <div class="card-body">
-                    <p>{{ book.description }}</p>
-                </div>
+            <div class="book-description">
+                {{ book.description }}
             </div>
             {% endif %}
-
-            <!-- Reviews section -->
-            <div class="card mt-3">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Reviews ({{ reviews|length }})</h5>
-                    {% if user_review %}
-                    <a href="/reviews/{{ user_review.id }}/edit" class="btn btn-sm btn-warning">
-                        <i class="fa fa-edit"></i> Edit Your Review
-                    </a>
-                    {% else %}
-                    <a href="/books/{{ book.id }}/add-review" class="btn btn-sm btn-primary">
-                        <i class="fa fa-star"></i> Write Review
-                    </a>
+            
+            <!-- Add to Reading List Button -->
+            <div class="dropdown" style="display: inline-block; margin-bottom: 2rem;">
+                <button class="add-to-list-btn dropdown-toggle" type="button" data-toggle="dropdown">
+                    Add to your reading list
+                </button>
+                <div class="dropdown-menu">
+                    <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
+                        <input type="hidden" name="status" value="TO_READ">
+                        <button type="submit" class="dropdown-item">📘 To Read</button>
+                    </form>
+                    <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
+                        <input type="hidden" name="status" value="READING">
+                        <button type="submit" class="dropdown-item">📖 Currently Reading</button>
+                    </form>
+                    <form method="POST" action="/books/{{ book.id }}/add-to-reading-list">
+                        <input type="hidden" name="status" value="READ">
+                        <button type="submit" class="dropdown-item">✅ Read</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-row">
+                    <div class="info-label">ISBN:</div>
+                    <div class="info-value">{{ book.isbn or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Genre:</div>
+                    <div class="info-value">{{ book.genre or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Publication year:</div>
+                    <div class="info-value">{{ book.publication_year or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Pages:</div>
+                    <div class="info-value">{{ book.pages or 'N/A' }}</div>
+                </div>
+            </div>
+            
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="reviews-header">Reviews</h3>
+                    {% if not user_review %}
+                    <a href="/books/{{ book.id }}/add-review" class="btn btn-primary btn-sm">Write Review</a>
                     {% endif %}
                 </div>
-                <div class="card-body">
-                    {% if reviews %}
-                        {% for review in reviews %}
-                        <div class="review-item mb-4 pb-3 {% if not loop.last %}border-bottom{% endif %}">
-                            <!-- Rating stars -->
-                            <div class="mb-2">
-                                {% for i in range(1, 6) %}
-                                    {% if i <= review.rating %}
-                                    <i class="fa fa-star text-warning"></i>
-                                    {% else %}
-                                    <i class="fa fa-star-o text-muted"></i>
-                                    {% endif %}
-                                {% endfor %}
-                                <span class="ml-2"><strong>{{ review.rating }}/5</strong></span>
-                            </div>
-                            
-                            <!-- Review meta -->
-                            <div class="text-muted mb-2">
-                                <strong>{{ review.user.username }}</strong>
-                                {% if review.user.role == 'admin' %}
-                                <span class="badge badge-danger">Admin</span>
+                
+                {% if reviews %}
+                    {% for review in reviews %}
+                    <div class="review-item-custom">
+                        <!-- Rating -->
+                        <div class="mb-2">
+                            {% for i in range(1, 6) %}
+                                {% if i <= review.rating %}
+                                <i class="fa fa-star text-warning"></i>
+                                {% else %}
+                                <i class="fa fa-star-o text-muted"></i>
                                 {% endif %}
-                                • {{ review.created_at.strftime('%B %d, %Y') }}
-                                {% if review.updated_at != review.created_at %}
-                                <span class="text-muted">(edited)</span>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Comment -->
-                            {% if review.comment %}
-                            <p class="mb-2">{{ review.comment }}</p>
-                            {% else %}
-                            <p class="text-muted mb-2"><em>No written review.</em></p>
-                            {% endif %}
-                            
-                            <!-- Actions (only for own reviews or admin) -->
-                            {% if current_user.id == review.user_id or current_user.role == 'admin' %}
-                            <div class="mt-2">
-                                <a href="/reviews/{{ review.id }}/edit" class="btn btn-sm btn-outline-warning">
-                                    <i class="fa fa-edit"></i> Edit
-                                </a>
-                                <form method="POST" action="/reviews/{{ review.id }}/delete" style="display: inline;">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
-                                            onclick="return confirm('Are you sure you want to delete this review?')">
-                                        <i class="fa fa-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </div>
-                            {% endif %}
+                            {% endfor %}
+                            <strong class="ml-2">{{ review.rating }}/5</strong>
                         </div>
-                        {% endfor %}
-                    {% else %}
-                    <p class="text-muted">No reviews yet. Be the first to review this book!</p>
-                    {% endif %}
-                </div>
+                        
+                        <!-- User -->
+                        <div class="text-muted mb-2">
+                            <strong>{{ review.user.username }}</strong>
+                            • {{ review.created_at.strftime('%B %d, %Y') }}
+                        </div>
+                        
+                        <!-- Comment -->
+                        {% if review.comment %}
+                        <p class="mb-2">{{ review.comment }}</p>
+                        {% endif %}
+                        
+                        <!-- Actions -->
+                        {% if current_user.id == review.user_id or current_user.role == 'admin' %}
+                        <div class="mt-2">
+                            <a href="/reviews/{{ review.id }}/edit" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <form method="POST" action="/reviews/{{ review.id }}/delete" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete review?')">Delete</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No reviews yet. Be the first!</p>
+                {% endif %}
             </div>
         </div>
     </div>

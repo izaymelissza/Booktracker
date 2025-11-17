@@ -1,0 +1,104 @@
+/* ============================================
+   STATS PAGE STYLES
+   Clean, minimal, no emojis
+   ============================================ */
+
+.stats-header {
+  margin-bottom: 2rem;
+}
+
+.stats-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #5D5D5D;
+  margin: 0;
+}
+
+/* Stats cards row */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Individual stat card */
+.stat-card {
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid;
+}
+
+.stat-card h5 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Stat card colors - subtle */
+.stat-card-blue {
+  background-color: #E8F4F9;
+  border-color: #87CEEB;
+  color: #5D5D5D;
+}
+
+.stat-card-yellow {
+  background-color: #FFF8E8;
+  border-color: #D4AF37;
+  color: #5D5D5D;
+}
+
+.stat-card-green {
+  background-color: #E8F4E8;
+  border-color: #B8D4B8;
+  color: #5D5D5D;
+}
+
+.stat-card-pink {
+  background-color: #FFF0F0;
+  border-color: #F4C2C2;
+  color: #5D5D5D;
+}
+
+/* Charts section */
+.charts-section {
+  margin-top: 2rem;
+}
+
+.chart-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #E0E0E0;
+  margin-bottom: 1.5rem;
+}
+
+.chart-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: #5D5D5D;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .stats-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+}

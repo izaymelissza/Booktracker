@@ -1,0 +1,377 @@
+/* ============================================
+   GLOBAL STYLES - Used on ALL pages
+   ============================================ */
+
+:root {
+  --sage-green: #B8D4B8;
+  --dusty-rose: #F4C2C2;
+  --warm-cream: #FAF3E0;
+  --vintage-gold: #D4AF37;
+  --charcoal: #5D5D5D;
+  --white: #FFFFFF;
+  --light-gray: #F5F5F5;
+  --border-gray: #E0E0E0;
+}
+
+/* ============================================
+   GLOBAL
+   ============================================ */
+
+body {
+  background-color: var(--warm-cream);
+  font-family: 'Lora', Georgia, serif;
+  color: var(--charcoal);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--charcoal);
+  font-weight: 700;
+}
+
+h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+h2 { font-size: 2rem; }
+
+.container {
+  background-color: transparent;
+  padding: 2rem 1rem;
+}
+
+hr {
+  border-top: 1px solid var(--border-gray);
+}
+
+.text-muted {
+  color: #888 !important;
+}
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+
+.navbar {
+  background-color: var(--white) !important;
+  border-bottom: 2px solid var(--sage-green);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 1rem 2rem;
+}
+
+.navbar-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--charcoal) !important;
+  font-style: italic;
+}
+
+.nav-link {
+  color: var(--charcoal) !important;
+  font-weight: 500;
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem !important;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--sage-green) !important;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+  border-radius: 4px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--sage-green);
+  border-color: var(--sage-green);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background-color: #9BC49B;
+  border-color: #9BC49B;
+}
+
+.btn-success {
+  background-color: var(--sage-green);
+  border-color: var(--sage-green);
+}
+
+.btn-success:hover {
+  background-color: #9BC49B;
+  border-color: #9BC49B;
+}
+
+.btn-warning {
+  background-color: var(--vintage-gold);
+  border-color: var(--vintage-gold);
+  color: var(--white);
+}
+
+.btn-warning:hover {
+  background-color: #C09A2E;
+  border-color: #C09A2E;
+}
+
+.btn-danger {
+  background-color: var(--dusty-rose);
+  border-color: var(--dusty-rose);
+  color: var(--white);
+}
+
+.btn-danger:hover {
+  background-color: #E8A0A0;
+  border-color: #E8A0A0;
+}
+
+.btn-secondary {
+  background-color: #A0A0A0;
+  border-color: #A0A0A0;
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background-color: #8A8A8A;
+  border-color: #8A8A8A;
+}
+
+.btn-info {
+  background-color: #87CEEB;
+  border-color: #87CEEB;
+  color: var(--white);
+}
+
+.btn-info:hover {
+  background-color: #6CB8D8;
+  border-color: #6CB8D8;
+}
+
+.btn-outline-warning {
+  border-color: var(--vintage-gold);
+  color: var(--vintage-gold);
+}
+
+.btn-outline-warning:hover {
+  background-color: var(--vintage-gold);
+  color: var(--white);
+}
+
+.btn-outline-danger {
+  border-color: var(--dusty-rose);
+  color: var(--dusty-rose);
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--dusty-rose);
+  color: var(--white);
+}
+
+.btn-sm-custom {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.card {
+  border: 1px solid var(--border-gray);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  background-color: var(--white);
+  margin-bottom: 1.5rem;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  background-color: var(--sage-green);
+  color: var(--white);
+  font-weight: 600;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0 !important;
+  padding: 1rem 1.5rem;
+}
+
+.card-header h5 {
+  color: var(--white);
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.card-body {
+  padding: 1.5rem;
+  background-color: var(--white);
+}
+
+.card.bg-info {
+  background-color: #87CEEB !important;
+  border: 1px solid #6CB8D8;
+  color: var(--white);
+}
+
+.card.bg-warning {
+  background-color: var(--vintage-gold) !important;
+  border: 1px solid #C09A2E;
+  color: var(--white);
+}
+
+.card.bg-success {
+  background-color: var(--sage-green) !important;
+  border: 1px solid #9BC49B;
+  color: var(--white);
+}
+
+.card.bg-primary {
+  background-color: var(--dusty-rose) !important;
+  border: 1px solid #E8A0A0;
+  color: var(--white);
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+
+.form-control {
+  border-radius: 4px;
+  border: 1px solid var(--border-gray);
+  padding: 0.6rem 1rem;
+}
+
+.form-control:focus {
+  border-color: var(--sage-green);
+  box-shadow: 0 0 0 0.15rem rgba(184, 212, 184, 0.2);
+}
+
+label {
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 0.4rem;
+}
+
+/* ============================================
+   ALERTS
+   ============================================ */
+
+.alert {
+  border-radius: 4px;
+  border: none;
+  border-left: 4px solid;
+}
+
+.alert-success {
+  background-color: #E8F4E8;
+  border-left-color: var(--sage-green);
+  color: var(--charcoal);
+}
+
+.alert-danger {
+  background-color: #FFF0F0;
+  border-left-color: var(--dusty-rose);
+  color: var(--charcoal);
+}
+
+.alert-info {
+  background-color: #E8F4F9;
+  border-left-color: #87CEEB;
+  color: var(--charcoal);
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
+
+.badge {
+  border-radius: 3px;
+  padding: 0.3rem 0.6rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.badge-danger {
+  background-color: var(--dusty-rose);
+}
+
+.badge-success {
+  background-color: var(--sage-green);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+.table {
+  background-color: var(--white);
+  border: 1px solid var(--border-gray);
+}
+
+.table thead {
+  background-color: var(--sage-green);
+  color: var(--white);
+}
+
+.table thead th {
+  border: none;
+  padding: 0.8rem;
+  font-weight: 600;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.table tbody tr:hover {
+  background-color: #F9F9F9;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #FAFAFA;
+}
+
+/* ============================================
+   DROPDOWN
+   ============================================ */
+
+.dropdown-menu {
+  border-radius: 4px;
+  border: 1px solid var(--border-gray);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+  padding: 0.6rem 1.2rem;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #F5F5F5;
+}
+
+.dropdown-header {
+  color: var(--charcoal);
+  font-weight: 600;
+  background-color: #F9F9F9;
+}
+
+/* ============================================
+   STARS
+   ============================================ */
+
+.fa-star {
+  color: var(--vintage-gold);
+}
+
+.fa-star-o {
+  color: #D3D3D3;
+}
